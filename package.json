@@ -3,8 +3,21 @@
   "version": "1.0.0",
   "description": "Application that researches companies",
   "main": "index.js",
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "backend:dev": "pnpm --filter company-research-tool-backend start:dev",
+    "backend:build": "pnpm --filter company-research-tool-backend run build",
+    "backend:start": "pnpm --filter company-research-tool-backend start",
+    "backend:test": "pnpm --filter company-research-tool-backend test",
+    "frontend:dev": "pnpm --filter company-research-tool-frontend dev",
+    "frontend:build": "pnpm --filter company-research-tool-frontend run build",
+    "frontend:start": "pnpm --filter company-research-tool-frontend start",
+    "frontend:test": "pnpm --filter company-research-tool-frontend test",
+    "dev": "concurrently --names backend,frontend --prefix \"[{name}]\" --prefix-colors cyan,magenta \"pnpm run backend:dev\" \"pnpm run frontend:dev\"",
+    "build": "pnpm backend:build && pnpm frontend:build",
+    "test": "pnpm backend:test && pnpm frontend:test"
   },
   "keywords": [],
   "author": "Ariel Yanarico",
@@ -12,9 +25,12 @@
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
-      "version": "^11.17.0",
+      "version": "11.17.0",
       "onFail": "download"
     }
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
 }
