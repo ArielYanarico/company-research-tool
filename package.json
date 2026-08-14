@@ -32,5 +32,8 @@
   "type": "module",
   "devDependencies": {
     "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "jsonframe-cheerio": "^3.0.1"
   }
 }

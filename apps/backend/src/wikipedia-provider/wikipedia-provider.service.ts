@@ -5,7 +5,7 @@ export class WikipediaProvider {
   async getCompany(companyName: string): Promise<unknown> {
     const title = encodeURIComponent(companyName);
     const response = await fetch(
-      `https://en.wikipedia.org/api/rest_v1/page/title/${title}`,
+      `https://en.wikipedia.org/api/rest_v1/page/summary/${title}`,
     );
 
     if (!response.ok) {

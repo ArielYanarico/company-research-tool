@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ClearbitProvider } from '../clearbit-provider/clearbit-provider.service';
+import { LinkedinProvider } from '../linkedin-provider/linkedin-provider.service';
 import { WikipediaProvider } from '../wikipedia-provider/wikipedia-provider.service';
 import { GetSearchDto } from './dto/get-search.dto';
 import { resolveProviderRequests } from './utils/resolve-provider-requests.util';
@@ -9,6 +10,7 @@ export class SearchService {
   constructor(
     private readonly clearbitProvider: ClearbitProvider,
     private readonly wikipediaProvider: WikipediaProvider,
+    private readonly linkedinProvider: LinkedinProvider,
   ) {}
 
   async create(getSearchDto: GetSearchDto): Promise<Record<string, unknown>> {
@@ -21,6 +23,10 @@ export class SearchService {
       {
         name: 'wikipedia',
         request: this.wikipediaProvider.getCompany(companyName),
+      },
+      {
+        name: 'linkedin',
+        request: this.linkedinProvider.getCompany(companyName),
       },
     ];
 
