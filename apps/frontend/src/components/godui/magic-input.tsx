@@ -149,7 +149,7 @@ const RingProgress = ({ value }: { value: number }) => (
 
 const Spinner = () => (
   <svg
-    className="animate-magic-input-spin [transform-origin:center] motion-reduce:animate-none"
+    className="animate-magic-input-spin origin-center motion-reduce:animate-none"
     viewBox="0 0 24 24"
     width="1em"
     height="1em"
