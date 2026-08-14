@@ -1,18 +1,15 @@
-import { Button } from "@/components/ui/button"
+
+import { PixelGrid } from "./components/godui/pixel-grid"
 
 export function App() {
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
+    <div className="relative flex w-full min-h-screen items-center justify-center overflow-hidden">
+      <PixelGrid interactive cursorReveal="dim" />
+      <p className="relative z-10 text-sm font-medium text-foreground">
+        Move your cursor across the grid
+      </p>
+      <div className="font-mono text-xs text-muted-foreground">
+        (Press <kbd>d</kbd> to toggle dark mode)
       </div>
     </div>
   )
