@@ -15,7 +15,9 @@
     "frontend:build": "pnpm --filter company-research-tool-frontend run build",
     "frontend:start": "pnpm --filter company-research-tool-frontend start",
     "frontend:test": "pnpm --filter company-research-tool-frontend test",
-    "dev": "concurrently --names backend,frontend --prefix \"[{name}]\" --prefix-colors cyan,magenta \"pnpm run backend:dev\" \"pnpm run frontend:dev\"",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "dev": "pnpm run docker:up && concurrently --names backend,frontend --prefix \"[{name}]\" --prefix-colors cyan,magenta \"pnpm run backend:dev\" \"pnpm run frontend:dev\"",
     "build": "pnpm backend:build && pnpm frontend:build",
     "test": "pnpm backend:test && pnpm frontend:test"
   },
