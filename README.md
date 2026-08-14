@@ -52,12 +52,29 @@ Before running the project, make sure you have:
 
 - Node.js 24.x or higher
 - pnpm 11.x or higher
+- Docker Desktop or Docker Engine for local MongoDB
 - a modern browser for the frontend
 
 Optional for future AI-based scraping flows:
 
 - a local LLM runtime or containerized model service
 - Docker support for running a local inference environment
+
+## Database
+
+The backend now connects to a local MongoDB instance using Mongoose.
+
+- Connection URI: `mongodb://localhost:27017/company-research`
+- Database name: `company-research`
+- Local container definition: the repo includes a MongoDB service in `docker-compose.yml`
+
+If you want to start the database manually:
+
+```bash
+docker compose up -d
+```
+
+This starts the MongoDB container on port `27017` and keeps data in a Docker volume.
 
 ## Getting Started
 
@@ -69,15 +86,23 @@ From the repository root:
 pnpm install
 ```
 
-### 2. Start the backend
+### 2. Start the database
+
+```bash
+pnpm docker:up
+```
+
+This starts the MongoDB container used by the backend.
+
+### 3. Start the backend
 
 ```bash
 pnpm backend:dev
 ```
 
-This runs the NestJS app in watch mode.
+This runs the NestJS app in watch mode and connects to MongoDB at `mongodb://localhost:27017/company-research`.
 
-### 3. Start the frontend
+### 4. Start the frontend
 
 ```bash
 pnpm frontend:dev
@@ -85,13 +110,13 @@ pnpm frontend:dev
 
 This runs the Vite development server.
 
-### 4. Run both together
+### 5. Run both together
 
 ```bash
 pnpm dev
 ```
 
-This starts the backend and frontend concurrently.
+This starts MongoDB, the backend, and the frontend concurrently.
 
 ## Project Structure
 
@@ -172,7 +197,7 @@ This branch was ultimately **abandoned**: the AI-assisted scraping path proved t
 
 ## Roadmap and TODOs
 
-- [ ] Backend: Add a DB to store previous requests and avoid making all the process again
+- [x] Backend: Add a DB to store previous requests and avoid making all the process again **DONE**
 - [ ] Backend: move service-level errors to a shared error handler middleware
 - [ ] Backend: move provider URLs into a constants file or environment configuration
 - [ ] DevOps(On-hold until AI were successfully added): add Docker setup for a local LLM instance to support scraping/extraction workflows
