@@ -9,7 +9,9 @@ export class WikipediaProvider {
     );
 
     if (!response.ok) {
-      throw new BadGatewayException('Wikipedia company information is unavailable');
+      throw new BadGatewayException(
+        'Wikipedia company information is unavailable',
+      );
     }
 
     return response.json();

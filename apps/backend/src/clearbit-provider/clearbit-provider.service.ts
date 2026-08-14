@@ -9,7 +9,9 @@ export class ClearbitProvider {
     );
 
     if (!response.ok) {
-      throw new BadGatewayException('Clearbit company suggestions are unavailable');
+      throw new BadGatewayException(
+        'Clearbit company suggestions are unavailable',
+      );
     }
 
     return response.json();

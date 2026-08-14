@@ -6,7 +6,11 @@ import { SearchController } from './search.controller';
 import { SearchService } from './search.service';
 
 @Module({
-  imports: [ClearbitProviderModule, WikipediaProviderModule, LinkedinProviderModule],
+  imports: [
+    ClearbitProviderModule,
+    WikipediaProviderModule,
+    LinkedinProviderModule,
+  ],
   controllers: [SearchController],
   providers: [SearchService],
 })
