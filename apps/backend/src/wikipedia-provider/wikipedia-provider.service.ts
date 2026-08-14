@@ -1,4 +1,4 @@
-import { BadGatewayException, Injectable } from '@nestjs/common';
+import { BadGatewayException, BadRequestException, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class WikipediaProvider {
@@ -14,6 +14,14 @@ export class WikipediaProvider {
       );
     }
 
-    return response.json();
+    const result = await response.json();
+
+    if (!result || result.length === 0) {
+      throw new BadRequestException(
+        'Company not found in Wikipedia provider.',
+      );
+    }
+
+    return result;
   }
 }

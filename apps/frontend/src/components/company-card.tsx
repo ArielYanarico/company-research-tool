@@ -102,14 +102,6 @@ export function CompanyCard({ company }: CompanyCardProps) {
             {company.extract}
           </p>
         )}
-
-        {company.partialError &&
-          Object.keys(company.partialError).length > 0 && (
-            <p className="rounded-lg bg-destructive/10 px-3 py-2 text-xs text-destructive">
-              Some sources were unavailable:{" "}
-              {Object.values(company.partialError).join(", ")}
-            </p>
-          )}
       </div>
     </section>
   )

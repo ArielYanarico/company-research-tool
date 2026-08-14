@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as cheerio from 'cheerio';
 import jsonframe from 'jsonframe-cheerio';
 
@@ -70,6 +70,10 @@ export class LinkedinProvider {
         };
       })
       .get();
+
+    if (!aboutInfo || Object.keys(aboutInfo).length === 0) {
+      throw new BadRequestException('Company not found in LinkedIn provider.');
+    }
 
     return { ...aboutInfo, people };
   }

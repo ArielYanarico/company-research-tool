@@ -17,15 +17,17 @@ export type Company = {
   description?: string
   extract?: string
   partialError?: Record<string, string>
+  message?: string
 }
 
 export async function searchCompany(companyName: string): Promise<Company> {
   const query = new URLSearchParams({ companyName })
   const response = await fetch(`/search?${query}`)
 
+  const result = await response.json() as Company
   if (!response.ok) {
-    throw new Error(`Search failed (${response.status})`)
+    throw new Error(`Search failed (${result.message ?? response.status})`)
   }
 
-  return response.json() as Promise<Company>
+  return result
 }

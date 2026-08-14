@@ -1,3 +1,5 @@
+import { BadRequestException } from "@nestjs/common/exceptions";
+
 export type ProviderRequest = {
   name: string;
   request: Promise<unknown>;
@@ -11,7 +13,6 @@ export async function resolveProviderRequests(
   );
   const partialError: Record<string, string> = {};
   const result: Record<string, unknown> = {};
-  let firstError: unknown;
 
   for (const [index, providerResult] of providerResults.entries()) {
     const { name } = providerRequests[index];
@@ -19,13 +20,15 @@ export async function resolveProviderRequests(
     if (providerResult.status === 'fulfilled') {
       result[name] = providerResult.value;
     } else {
-      firstError ??= providerResult.reason;
       partialError[name] = getErrorMessage(providerResult.reason);
     }
   }
 
+  console.log('Partial errors:', result);
   if (Object.keys(result).length === 0) {
-    throw firstError;
+    throw new BadRequestException(
+      'Company not found in any of the providers.'
+    );
   }
 
   return Object.keys(partialError).length > 0

@@ -35,6 +35,8 @@ export function App() {
       setCompany(await searchCompany(trimmed))
       setStatus("success")
     } catch (err) {
+      console.log(err);
+      
       setError(err instanceof Error ? err.message : "Search failed")
       setStatus("error")
     }

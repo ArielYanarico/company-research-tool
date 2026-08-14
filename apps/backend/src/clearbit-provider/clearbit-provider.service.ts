@@ -1,4 +1,4 @@
-import { BadGatewayException, Injectable } from '@nestjs/common';
+import { BadGatewayException, BadRequestException, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ClearbitProvider {
@@ -14,6 +14,13 @@ export class ClearbitProvider {
       );
     }
 
-    return response.json();
+    const results = await response.json();
+    if (!results || results.length === 0) {
+      throw new BadRequestException(
+        'Company not found in Clearbit provider.',
+      );
+    }
+
+    return results;
   }
 }
