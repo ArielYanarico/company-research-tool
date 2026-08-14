@@ -1,35 +1,185 @@
 # Company Research Tool
-pplication that researches companies.
+
+A monorepo project for gathering company information from the web and presenting it in a simple, searchable interface. The goal is to combine public company source data, web scraping, and AI-assisted extraction to build a useful research workflow without depending entirely on rigid page-specific scraping logic.
+
+## Overview
+
+The tool is designed to answer a practical problem: when a user searches for a company, the application should be able to:
+
+- find likely company references or URLs from public sources
+- collect web pages related to the company
+- extract relevant business information from those pages
+- normalize the results into a usable company profile
+- present the output in a frontend dashboard
+
+This project currently uses provider-based discovery and HTML extraction as a foundation, with a local AI model as the long-term strategy for flexible information extraction from varying website structures.
 
 ## Architecture
 
-This project is organized as a monorepo containing:
+This repository is organized as a monorepo:
 
-- **Backend** (`apps/backend`): NestJS API server
-- **Frontend** (`apps/frontend`): Reactjs web application with Tailwind CSS
+- **Backend** (`apps/backend`): NestJS API server responsible for orchestration, provider integrations, and company search logic.
+- **Frontend** (`apps/frontend`): React + TypeScript + Vite application for the user-facing interface.
+- **Root**: shared workspace configuration and task scripts for running the app in development.
+
+### Backend responsibilities
+
+The backend includes modules for:
+
+- search orchestration
+- provider integrations for sources such as Wikipedia and Clearbit
+- HTML parsing utilities
+- response formatting and normalization
+
+### Frontend responsibilities
+
+The frontend provides:
+
+- a simple company search experience
+- result cards and summaries
+- a polished UI using Tailwind-based components and modern React patterns
+
+## Tech Stack
+
+- **Backend**: NestJS, TypeScript, Cheerio, Jest
+- **Frontend**: React 19, Vite, TypeScript, Tailwind CSS
+- **Package manager**: pnpm
+- **Monorepo tooling**: pnpm workspaces
 
 ## Prerequisites
 
+Before running the project, make sure you have:
+
 - Node.js 24.x or higher
 - pnpm 11.x or higher
+- a modern browser for the frontend
 
-## Problem statement 
+Optional for future AI-based scraping flows:
 
-* The goal is getting info of any company entered so:
-  * How can I get its data from internet?
-    * Using Search engines has limitations in free tier usage
-    * **I can use some providers like wikipedia and clearbit in order to get companies URL only**
-  * How can I get the desired information from gotten company Urls?
-    * I can go manually go into web pages and fill a DB with data and offer only companies from my DB but it is lots of manually work for a little DB.
-    * I can automate this process, but it still is a lots of work for few results.
-    * I can automate a scrapping tool for getting this info directly from its HTML page information, but we have limitation of the HTML format and getting data (This is a partial solution)
-    * I can scrap HTML pages with help from a AI agent, it could finid the desired information from HTML without depending on the page format (by default I am going to use a local free model)
+- a local LLM runtime or containerized model service
+- Docker support for running a local inference environment
 
+## Getting Started
 
+### 1. Install dependencies
 
+From the repository root:
 
-## Todos
+```bash
+pnpm install
+```
 
-- [ ] Backend: Move errors from services to a common error handler middleware
-- [ ] Backend: Move provider URLs to a constant file or env file
-- [ ] DevOps: Add docker configuration for having a llama instance to scrap pages
+### 2. Start the backend
+
+```bash
+pnpm backend:dev
+```
+
+This runs the NestJS app in watch mode.
+
+### 3. Start the frontend
+
+```bash
+pnpm frontend:dev
+```
+
+This runs the Vite development server.
+
+### 4. Run both together
+
+```bash
+pnpm dev
+```
+
+This starts the backend and frontend concurrently.
+
+## Project Structure
+
+```text
+company-research-tool/
+├── apps/
+│   ├── backend/
+│   │   ├── src/
+│   │   ├── test/
+│   │   ├── package.json
+│   │   └── README.md
+│   └── frontend/
+│       ├── src/
+│       ├── public/
+│       ├── package.json
+│       └── vite.config.ts
+├── package.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+├── README.md
+└── LICENSE
+```
+
+## How the App Works
+
+The current approach follows a research pipeline:
+
+1. A company name is entered by the user.
+2. The backend tries to resolve likely company URLs using available providers.
+3. Candidate pages are analyzed and normalized.
+4. Web content is extracted from HTML files.
+5. An AI-assisted layer can interpret the page content and structure beyond static selectors.
+6. The final, cleaned information is returned to the frontend for display.
+
+This is intentionally flexible because public websites do not share a uniform structure, and many company pages are designed for humans instead of machine-readable APIs.
+
+## Current Challenges
+
+The project addresses a few common issues in company research automation:
+
+- search engine APIs are often limited or expensive in free tiers
+- public providers can give company references or URL hints, but not always complete data
+- scraping raw HTML is noisy and fragile across sites
+- website structures vary widely, which makes rigid extraction brittle
+
+To address these challenges, the project is exploring AI-assisted extraction from page content instead of relying only on page-specific parsing rules.
+
+## Development History
+
+This section summarizes how the project evolved, based on the commit history.
+
+### Early foundation
+
+- **Initial commit** — repository bootstrap.
+- **Monorepo setup** — structured the repo with pnpm workspaces and created dummy backend (NestJS) and frontend (React + Vite) applications.
+- **Dummy search endpoint** — first version of the `/search` endpoint returning a placeholder response so the API shape could be agreed on before real data existed.
+
+### Provider-based discovery
+
+- **Clearbit and Wikipedia providers** — added the first two providers to resolve company names into URLs and general company references.
+- **Partial-failure bugfix** — a single failing provider previously broke the whole response; the resolve logic was extracted into a util (`resolve-provider-requests`) using `Promise.allSettled` so the API returns partial results with a `partialError` object instead of failing entirely.
+- **LinkedIn provider** — added HTML parsing with Cheerio to scrape a company profile (website, industry, size, headquarters, founded, specialties, people) directly from LinkedIn pages without using any API.
+- **Response formatter middleware** — an interceptor that normalizes the raw per-provider responses (Clearbit suggestions, Wikipedia summary, LinkedIn profile) into one unified company profile (name, website, other sites, age, description, extract, etc.) for the frontend.
+
+### Frontend
+
+- **GodUI dummy frontend** — imported the GodUI component set (magic input, magic button, pixel grid) and built a bare placeholder page.
+- **Search bar UI** — replaced the placeholder with a Google-like search page using the magic input and magic buttons, with a result card rendering the formatted company profile.
+- **Error handling and polish** — improved error states across the flow and fixed a Spinner class-name detail.
+
+### The `ai-approach` branch (failing)
+
+In parallel with the provider work, a separate branch experimented with using an AI for scraping instead of static HTML parsing:
+
+- **OpenAI + LLMScraper integration** — wired OpenAI and LLMScraper into `SearchService` to scrape contact information from arbitrary company URLs, added a Playwright service to `docker-compose.yml` for browser automation, and installed the OpenAI/LLMScraper/Playwright dependencies.
+
+This branch was ultimately **abandoned**: the AI-assisted scraping path proved too heavy and fragile for the current needs (containerized browser automation plus an LLM dependency for data that the providers already return more reliably). The project pivoted to the cleaner provider-based approach on `development`, and AI-assisted extraction was kept as a long-term roadmap item rather than a blocker for the current version.
+
+## Roadmap and TODOs
+
+- [ ] Backend: Add a DB to store previous requests and avoid making all the process again
+- [ ] Backend: move service-level errors to a shared error handler middleware
+- [ ] Backend: move provider URLs into a constants file or environment configuration
+- [ ] DevOps(On-hold until AI were successfully added): add Docker setup for a local LLM instance to support scraping/extraction workflows
+- [ ] All: Add a logger strategy to keep log files
+- [ ] Frontend: Move hardcoded variables to a .env file
+- [ ] All: Find a wayt to have only one .env for Frontend and Backend
+
+## License
+
+This project is licensed under the ISC license.
